@@ -31,7 +31,7 @@ class PhotoController @Autowired constructor(
     @PostMapping("/upload")
     fun upload(@RequestParam("file") file: MultipartFile): Photo {
         val id = UUID.randomUUID().toString()
-        val uri = "$bucket/$id"
+        val uri = "$bucket/${id}.jpg"
 
         val gcs = ctx.getResource(uri) as WritableResource
 
@@ -43,7 +43,7 @@ class PhotoController @Autowired constructor(
         val response = visionTemplate.analyzeImage(file.resource, Feature.Type.LABEL_DETECTION)
         println(response)
         val labels = response.labelAnnotationsList.take(5).map { it.description }.joinToString(", ")
-        return photoRepository.save(Photo(id = id, url = "/image/$id", label = labels))
+        return photoRepository.save(Photo(id = id, url = "/image/${id}.jpg", label = labels))
     }
 
     @GetMapping("/image/{id}")
